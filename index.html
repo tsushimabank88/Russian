@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Цусим банк — Моментальные кредиты онлайн до 10 млн ₽</title>
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="logo.png">
+
+    <meta name="theme-color" content="#080612" id="themeColorMeta">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        tsusima: {
+                            bg: '#080612',
+                            card: '#0f0c20',
+                            purple: '#7c3aed',
+                            lightPurple: '#a855f7'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .dark body { background-color: #080612; color: #f3f4f6; }
+        .dark .glow-purple { background: radial-gradient(circle, rgba(124, 58, 237, 0.22) 0%, rgba(8, 6, 18, 0) 70%); }
+        .dark .gsdi-glass {
+            background: rgba(15, 12, 32, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(139, 92, 246, 0.18);
+        }
+        .dark .gsdi-glass:hover {
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 0 25px rgba(124, 58, 237, 0.15);
+        }
+
+        html:not(.dark) body { background-color: #f8fafc; color: #0f172a; }
+        html:not(.dark) .glow-purple { background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(248, 250, 252, 0) 70%); }
+        html:not(.dark) .gsdi-glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(124, 58, 237, 0.15);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        input, select, textarea { font-size: 16px !important; }
+
+        /* 3D Карта без обрезок */
+        .card-container {
+            perspective: 1000px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 360px;
+            height: 220px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+        }
+        .card-container.flipped .card-inner {
+            transform: rotateY(180deg) !important;
+        }
+        .card-front, .card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        .card-front { padding: 1.25rem; }
+        .card-back { transform: rotateY(180deg); padding: 0; }
+
+        .card-purple { background: linear-gradient(135deg, #1e3a8a 0%, #0d47a1 50%, #7c3aed 100%); }
+        .card-gold { background: linear-gradient(135deg, #78350f 0%, #b45309 50%, #d97706 100%); }
+        .card-black { background: linear-gradient(135deg, #111827 0%, #1f2937 50%, #000000 100%); }
+        
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 22px; width: 22px; border-radius: 50%;
+            background: #a855f7; cursor: pointer;
+            box-shadow: 0 0 12px rgba(168, 85, 247, 0.8);
+            margin-top: -7px; border: 2px solid #ffffff;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 8px; cursor: pointer;
+            background: #1e1738; border-radius: 4px;
+        }
+        html:not(.dark) input[type=range]::-webkit-slider-runnable-track { background: #e2e8f0; }
+
+        button, a { -webkit-tap-highlight-color: transparent; user-select: none; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen relative overflow-x-hidden pb-16 md:pb-0">
+
+    <div class="fixed -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[500px] glow-purple pointer-events-none z-0"></div>
+
+    <div class="bg-gradient-to-r from-tsusima-purple to-indigo-900 text-white text-[11px] sm:text-xs py-1.5 px-3 text-center font-medium z-50 relative flex items-center justify-center space-x-2">
+        <i class="fa-solid fa-clock animate-pulse"></i>
+        <span>Специальная ставка <b>от 8.5%</b> действует при оформлении за:</span>
+        <span id="promoTimer" class="font-mono font-bold bg-black/40 px-2 py-0.5 rounded border border-white/20">15:00</span>
+    </div>
+
+    <div class="bg-[#05040a] text-gray-400 text-xs py-2 px-4 border-b border-[#18132e] z-50 relative">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3 text-[11px] sm:text-xs">
+                <span><i class="fa-solid fa-clock text-tsusima-lightPurple mr-1"></i> 24/7 Онлайн</span>
+                <span><i class="fa-solid fa-bolt text-tsusima-lightPurple mr-1"></i> Решение за 2 мин</span>
+            </div>
+            <div class="flex items-center space-x-3 text-[11px] sm:text-xs">
+                <button onclick="copyContact('+79366108398', 'Ватсап')" class="hover:text-white transition flex items-center">
+                    <i class="fa-brands fa-whatsapp text-emerald-400 mr-1"></i> +7 (936) 610-83-98
+                </button>
+                <button onclick="copyContact('+79026408512', 'Макс')" class="hover:text-white transition flex items-center hidden sm:flex">
+                    <i class="fa-solid fa-comments text-purple-400 mr-1"></i> +7 (902) 640-85-12
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-[#080612]/80 backdrop-blur-xl border-b border-gray-200 dark:border-[#1b1535]">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div onclick="navigateTo('home')" class="flex items-center space-x-3 cursor-pointer">
+                <img src="logo.png" alt="Цусим банк" class="w-10 h-10 object-contain rounded-xl shadow-lg shadow-purple-900/40 border border-white/20">
+                <span class="text-2xl font-bold text-gray-900 dark:text-white tracking-wide">Цусим <span class="text-tsusima-lightPurple">банк</span></span>
+            </div>
+            
+            <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-600 dark:text-gray-300">
+                <button onclick="navigateTo('home')" class="hover:text-tsusima-lightPurple transition">Главная</button>
+                <button onclick="navigateTo('calculator')" class="hover:text-tsusima-lightPurple transition">Калькулятор</button>
+                <button onclick="navigateTo('score')" class="hover:text-tsusima-lightPurple transition">Шанс одобрения</button>
+                <button onclick="navigateTo('reviews-page')" class="hover:text-tsusima-lightPurple transition">Отзывы</button>
+                <button onclick="navigateTo('contacts')" class="hover:text-tsusima-lightPurple transition">Контакты</button>
+            </nav>
+
+            <div class="flex items-center space-x-2">
+                <button onclick="toggleTheme()" class="p-2.5 rounded-xl border border-gray-200 dark:border-[#231c42] bg-gray-100 dark:bg-[#0f0c20] text-gray-700 dark:text-gray-200 hover:border-tsusima-purple transition">
+                    <i id="themeIcon" class="fa-solid fa-moon"></i>
+                </button>
+
+                <button onclick="openInstallModal()" class="border border-tsusima-purple/60 bg-tsusima-purple/10 hover:bg-tsusima-purple text-tsusima-purple dark:text-white hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-2">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Установить</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="page-home" class="page-section active fade-in">
+        <section class="py-10 sm:py-16 max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            <div class="space-y-5 text-center lg:text-left">
+                <div class="inline-flex items-center bg-purple-100 dark:bg-[#130f28] border border-tsusima-purple/40 text-tsusima-purple dark:text-tsusima-lightPurple text-xs px-3.5 py-1.5 rounded-full font-semibold">
+                    <span class="w-2 h-2 bg-emerald-400 rounded-full mr-2 animate-ping"></span>
+                    Сниженная ставка от 8.5% на суммы от 3 млн ₽
+                </div>
+                <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 dark:text-white leading-tight">Цифровой кредит до 10 000 000 ₽</h1>
+                <p class="text-gray-600 dark:text-gray-400 text-sm sm:text-base leading-relaxed">
+                    Скачайте официальное приложение для Android и получите перечисление средств за 2 минуты без справок 2-НДФЛ и поручителей.
+                </p>
+
+                <div class="pt-2 flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+                    <button onclick="openInstallModal()" class="w-full sm:w-auto flex items-center justify-center bg-gradient-to-r from-tsusima-purple to-tsusima-lightPurple hover:opacity-90 text-white font-bold py-4 px-8 rounded-xl shadow-xl transition active:scale-95">
+                        <img src="logo.png" alt="Лого" class="w-8 h-8 object-contain mr-3 rounded-lg border border-white/20">
+                        <span class="text-base font-bold">Скачать Цусим банк</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center space-y-4">
+                <div id="cardContainer" class="card-container" title="Нажмите, чтобы перевернуть карту">
+                    <div id="cardInner" class="card-inner">
+                        <div id="cardVisual" class="card-front card-purple text-white">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-[10px] uppercase opacity-70 font-semibold">Премиум Лимит</div>
+                                    <div class="text-lg font-black tracking-wider">Цусим банк</div>
+                                </div>
+                                <i class="fa-solid fa-wifi text-xl"></i>
+                            </div>
+                            <div class="font-mono text-base tracking-widest my-auto">2200 •••• •••• 9012</div>
+                            <div class="flex justify-between items-end text-xs">
+                                <div><span class="opacity-70 block text-[9px]">ДОСТУПНО</span><b>10 000 000 ₽</b></div>
+                                <div><span class="opacity-70 block text-[9px]">СТАВКА</span><b class="text-emerald-300">от 8.5%</b></div>
+                            </div>
+                        </div>
+
+                        <div class="card-back card-purple text-white flex flex-col justify-between">
+                            <div class="w-full pt-3">
+                                <div class="w-full h-11 bg-[#111118] border-y border-white/10 shadow-inner"></div>
+                            </div>
+                            
+                            <div class="px-5 space-y-1.5 my-auto">
+                                <div class="text-[9px] opacity-70">Подпись владельца / Authorized Signature</div>
+                                <div class="bg-white/95 text-black font-mono px-3 py-1 rounded text-xs w-2/3 font-bold shadow-sm">Цусим Заёмщик</div>
+                                <div class="flex justify-between items-center pt-1.5">
+                                    <span class="text-[9px] opacity-80">CVV: <b class="font-mono">***</b></span>
+                                    <span class="text-[9px] opacity-80">Поддержка: 8-800-555-3535</span>
+                                </div>
+                            </div>
+
+                            <div class="text-[8px] text-center opacity-60 uppercase tracking-widest pb-3">Нажмите еще раз, чтобы вернуть</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3 bg-gray-200 dark:bg-[#0f0c20] px-3 py-1.5 rounded-full border border-gray-300 dark:border-[#231c42]">
+                    <span class="text-[10px] text-gray-600 dark:text-gray-400">Стиль карты:</span>
+                    <button onclick="setCardStyle('card-purple')" class="w-5 h-5 rounded-full bg-indigo-600 border border-white/40"></button>
+                    <button onclick="setCardStyle('card-gold')" class="w-5 h-5 rounded-full bg-amber-600 border border-white/40"></button>
+                    <button onclick="setCardStyle('card-black')" class="w-5 h-5 rounded-full bg-gray-900 border border-white/40"></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-12 bg-gray-100 dark:bg-[#0b0818] border-t border-b border-gray-200 dark:border-[#16112d]">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Отзывы клиентов</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1"><i class="fa-solid fa-rotate text-emerald-500 mr-1"></i> Случайная выборка при каждом визите</p>
+                    </div>
+                    <button onclick="navigateTo('reviews-page')" class="text-xs font-bold text-tsusima-lightPurple hover:underline">Все отзывы и оставить свой →</button>
+                </div>
+                <div id="homeReviewsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            </div>
+        </section>
+    </main>
+
+    <main id="page-reviews-page" class="page-section fade-in">
+        <section class="py-10 max-w-5xl mx-auto px-4 space-y-8">
+            <div class="text-center space-y-2">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Отзывы заёмщиков</h2>
+                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Оставьте свой отзыв — он моментально отобразится в ленте!</p>
+            </div>
+
+            <div class="gsdi-glass rounded-3xl p-6 border border-gray-200 dark:border-tsusima-purple/30 space-y-4">
+                <h3 class="text-base font-bold text-gray-900 dark:text-white">Оставить отзыв</h3>
+                <form id="addReviewForm" onsubmit="handleUserReviewSubmit(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ваше имя и город:</label>
+                            <input type="text" id="reviewAuthor" required placeholder="Например: Иван из г. Москва" class="w-full bg-gray-50 dark:bg-[#080612] border border-gray-300 dark:border-[#2b2252] rounded-xl px-3 py-2 text-xs text-gray-900 dark:text-white focus:outline-none focus:border-tsusima-lightPurple">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Сумма кредита:</label>
+                            <input type="text" id="reviewSum" required placeholder="Например: 500 000 ₽" class="w-full bg-gray-50 dark:bg-[#080612] border border-gray-300 dark:border-[#2b2252] rounded-xl px-3 py-2 text-xs text-gray-900 dark:text-white focus:outline-none focus:border-tsusima-lightPurple">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Оценка (от 1 до 5):</label>
+                            <select id="reviewRating" class="w-full bg-gray-50 dark:bg-[#080612] border border-gray-300 dark:border-[#2b2252] rounded-xl px-3 py-2 text-xs text-gray-900 dark:text-white focus:outline-none focus:border-tsusima-lightPurple">
+                                <option value="5">⭐⭐⭐⭐⭐ 5 из 5 (Отлично)</option>
+                                <option value="4">⭐⭐⭐⭐ 4 из 5 (Хорошо)</option>
+                                <option value="3">⭐⭐⭐ 3 из 5 (Нормально)</option>
+                                <option value="2">⭐⭐ 2 из 5 (Плохо)</option>
+                                <option value="1">⭐ 1 из 5 (Ужасно)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ваш отзыв:</label>
+                        <textarea id="reviewText" required rows="3" placeholder="Опишите ваш опыт работы с банком..." class="w-full bg-gray-50 dark:bg-[#080612] border border-gray-300 dark:border-[#2b2252] rounded-xl p-3 text-xs text-gray-900 dark:text-white focus:outline-none focus:border-tsusima-lightPurple"></textarea>
+                    </div>
+                    <button type="submit" class="bg-gradient-to-r from-tsusima-purple to-tsusima-lightPurple text-white font-bold text-xs py-3 px-6 rounded-xl shadow-md hover:opacity-90 transition">
+                        Опубликовать отзыв
+                    </button>
+                </form>
+            </div>
+
+            <div id="fullReviewsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </section>
+    </main>
+
+    <main id="page-calculator" class="page-section fade-in">
+        <section class="py-10 max-w-5xl mx-auto px-4 space-y-8">
+            <div class="gsdi-glass rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-tsusima-purple/30 shadow-2xl space-y-6">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white text-center">Кредитный калькулятор</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div>
+                            <label class="font-semibold text-gray-700 dark:text-gray-300 text-xs block mb-2">Сумма кредита:</label>
+                            <input type="text" id="amountInput" value="3 500 000 ₽" class="w-full bg-gray-50 dark:bg-[#080612] border border-gray-300 dark:border-[#2b2252] rounded-xl px-4 py-2.5 text-lg font-bold text-gray-900 dark:text-white focus:outline-none focus:border-tsusima-lightPurple">
+                            <input type="range" id="amountRange" min="50000" max="10000000" step="50000" value="3500000" class="w-full h-2 rounded-lg cursor-pointer mt-3">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="font-semibold text-gray-700 dark:text-gray-300 text-xs block">Срок кредита:</label>
+                                <div class="flex bg-gray-200 dark:bg-[#080612] p-1 rounded-lg text-[11px] font-bold">
+                                    <button id="btnUnitMonths" onclick="setTermUnit('months')" class="px-2.5 py-1 rounded-md bg-tsusima-purple text-white transition">Месяцы</button>
+                                    <button id="btnUnitYears" onclick="setTermUnit('years')" class="px-2.5 py-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-white transition">Годы</button>
+                                </div>
+                            </div>
+                            <input type="range" id="termRange" min="3" max="240" step="1" value="36" class="w-full h-2 rounded-lg cursor-pointer">
+                            <div id="termValueDisplay" class="text-right text-xs font-bold text-tsusima-lightPurple mt-1">36 месяцев (3 года)</div>
+                        </div>
+
+                        <div class="bg-purple-50 dark:bg-[#0a0718] border border-purple-200 dark:border-[#1f1938] p-4 rounded-xl flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-gray-600 dark:text-gray-400 block">Процентная ставка:</span>
+                                <span id="rateNotice" class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">Сниженная ставка за сумму от 3 млн ₽</span>
+                            </div>
+                            <span id="currentRateText" class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400">8.5%</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 dark:bg-[#0b0818] border border-gray-200 dark:border-[#1f1938] p-6 rounded-2xl flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold">Ежемесячный платеж</div>
+                                <div id="monthlyPayment" class="text-3xl font-extrabold text-tsusima-lightPurple">0 ₽</div>
+                            </div>
+                            <div class="border-t border-b border-gray-200 dark:border-[#1b1535] py-3 text-xs space-y-1">
+                                <div class="flex justify-between text-gray-600 dark:text-gray-400"><span>Переплата:</span><b id="totalInterest" class="text-gray-900 dark:text-white">0 ₽</b></div>
+                                <div class="flex justify-between text-gray-600 dark:text-gray-400"><span>Всего выплат:</span><b id="totalAmount" class="text-gray-900 dark:text-white">0 ₽</b></div>
+                            </div>
+                        </div>
+
+                        <button onclick="openInstallModal()" class="w-full bg-gradient-to-r from-tsusima-purple to-tsusima-lightPurple text-white font-bold py-3.5 rounded-xl shadow-lg">
+                            Забрать под <span id="btnRateText">8.5%</span> →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gsdi-glass rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-tsusima-purple/30 shadow-2xl space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white"><i class="fa-solid fa-table-list mr-2 text-tsusima-lightPurple"></i>График платежей по месяцам</h3>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Аннуитетная схема</span>
+                </div>
+                <div class="overflow-x-auto max-h-80 rounded-xl border border-gray-200 dark:border-[#231c42]">
+                    <table class="w-full text-xs text-left text-gray-600 dark:text-gray-300">
+                        <thead class="bg-gray-100 dark:bg-[#0f0c20] text-gray-900 dark:text-gray-200 sticky top-0 border-b border-gray-200 dark:border-[#231c42]">
+                            <tr>
+                                <th class="py-3 px-4">№</th>
+                                <th class="py-3 px-4">Платеж</th>
+                                <th class="py-3 px-4">Основной долг</th>
+                                <th class="py-3 px-4">Проценты</th>
+                                <th class="py-3 px-4">Остаток долга</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleBody" class="divide-y divide-gray-200 dark:divide-[#1f1938]"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <main id="page-score" class="page-section fade-in">
+        <section class="py-10 max-w-3xl mx-auto px-4">
+            <div class="gsdi-glass p-6 sm:p-8 rounded-3xl border border-gray-200 dark:border-tsusima-purple/30 space-y-6">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white text-center">Скоринг вероятности одобрения</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-xs text-gray-700 dark:text-gray-300">Возраст заёмщика: <b id="ageVal" class="text-tsusima-lightPurple">28 лет</b></label>
+                        <input type="range" min="18" max="70" value="28" oninput="updateScore()" id="ageInput" class="w-full h-2">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-700 dark:text-gray-300">Желаемая сумма: <b id="scoreAmountVal" class="text-tsusima-lightPurple">350 000 ₽</b></label>
+                        <input type="range" min="50000" max="10000000" step="50000" value="350000" oninput="updateScore()" id="scoreAmountInput" class="w-full h-2">
+                    </div>
+                </div>
+
+                <div class="bg-gray-100 dark:bg-[#080612] p-5 rounded-2xl border border-gray-200 dark:border-[#231c42] text-center space-y-2">
+                    <div class="text-xs text-gray-500 dark:text-gray-400">Шанс одобрения по вашей анкете:</div>
+                    <div id="scorePercent" class="text-4xl font-extrabold text-emerald-500">92%</div>
+                    <div id="scoreWarning" class="text-[11px] text-amber-500 dark:text-amber-400 font-medium hidden pt-1">⚠️ На крупные суммы от 3 млн ₽ требуется дополнительное подтверждение дохода</div>
+                </div>
+
+                <button onclick="openInstallModal()" class="w-full bg-tsusima-purple text-white font-bold py-3.5 rounded-xl shadow-lg">Подать заявку с этим шансом →</button>
+            </div>
+        </section>
+    </main>
+
+    <main id="page-contacts" class="page-section fade-in">
+        <section class="py-10 max-w-4xl mx-auto px-4">
+            <div class="gsdi-glass rounded-3xl p-6 border border-gray-200 dark:border-tsusima-purple/30 space-y-4">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white">Служба поддержки «Цусим банк»</h2>
+                <div class="space-y-3">
+                    <button onclick="copyContact('+79026408512', 'Макс')" class="w-full flex items-center justify-between bg-gray-50 dark:bg-[#0a0718] p-3.5 rounded-xl border border-gray-200 dark:border-[#1f1938] text-xs">
+                        <span class="text-gray-900 dark:text-white">Мессенджер Макс: <b>+7 (902) 640-85-12</b></span>
+                        <span class="text-tsusima-lightPurple">Скопировать</span>
+                    </button>
+                    <button onclick="copyContact('+79366108398', 'Ватсап')" class="w-full flex items-center justify-between bg-emerald-50 dark:bg-emerald-950/40 p-3.5 rounded-xl border border-emerald-200 dark:border-emerald-800/40 text-xs">
+                        <span class="text-gray-900 dark:text-white">Чат Ватсап: <b>+7 (936) 610-83-98</b></span>
+                        <span class="text-emerald-600 dark:text-emerald-400">Скопировать</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Модальное окно установки с Вашим оригинальным логотипом logo.png -->
+    <div id="installModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="gsdi-glass rounded-3xl max-w-3xl w-full p-6 text-center space-y-6 border border-tsusima-purple/40 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeInstallModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+
+            <!-- Шапка модального окна -->
+            <div class="flex items-center justify-center space-x-3 pt-2">
+                <img src="logo.png" alt="Цусим банк" class="w-12 h-12 object-contain rounded-xl shadow-lg border border-white/20">
+                <div class="text-left">
+                    <h3 class="text-xl font-extrabold text-gray-900 dark:text-white">Цусим банк</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Инструкция по установке приложения</p>
+                </div>
+            </div>
+
+            <!-- Плашка предупреждения -->
+            <div class="flex justify-center">
+                <div class="inline-flex items-center bg-purple-900/40 border border-tsusima-purple/50 text-purple-200 text-[11px] font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
+                    Если появилась ошибка установки
+                </div>
+            </div>
+
+            <h4 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
+                Как установить приложение за <span class="text-tsusima-lightPurple">3 простых шага</span>
+            </h4>
+
+            <!-- 3 шага с макетами телефонов -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+                
+                <!-- Шаг 1 -->
+                <div class="bg-[#0a0814]/60 border border-white/10 p-3 rounded-2xl flex flex-col space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-6 h-6 rounded-full bg-tsusima-purple text-white text-xs font-bold flex items-center justify-center">1</span>
+                        <span class="text-xs font-bold text-white">Откройте файл</span>
+                    </div>
+                    <!-- Макет экрана телефона 1 -->
+                    <div class="bg-[#05040a] border-2 border-[#231b40] rounded-xl p-2.5 space-y-2 text-gray-800">
+                        <div class="text-[10px] font-bold text-white">Недавние</div>
+                        <div class="border-2 border-red-500 bg-purple-50 rounded-lg p-2 flex items-center space-x-2">
+                            <img src="logo.png" alt="Лого" class="w-6 h-6 object-contain rounded border border-white/20 flex-shrink-0">
+                            <div class="overflow-hidden">
+                                <div class="text-[10px] font-bold text-gray-900 truncate">Цусим Банк.apk</div>
+                                <div class="text-[8px] text-gray-500">14.3 МБ</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-gray-400">Найдите <b class="text-white">Цусим Банк.apk</b> в загрузках и нажмите на него.</p>
+                </div>
+
+                <!-- Шаг 2 -->
+                <div class="bg-[#0a0814]/60 border border-white/10 p-3 rounded-2xl flex flex-col space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-6 h-6 rounded-full bg-tsusima-purple text-white text-xs font-bold flex items-center justify-center">2</span>
+                        <span class="text-xs font-bold text-white">Нажмите «Настройки»</span>
+                    </div>
+                    <!-- Макет экрана телефона 2 -->
+                    <div class="bg-[#05040a] border-2 border-[#231b40] rounded-xl p-3 flex flex-col justify-center items-center relative min-h-[110px]">
+                        <div class="bg-white rounded-xl p-2.5 w-full text-gray-900 space-y-1 shadow">
+                            <div class="text-[10px] font-bold">Блокировка установки</div>
+                            <p class="text-[8px] text-gray-600 leading-tight">Телефон блокирует установку неизвестных приложений.</p>
+                            <div class="flex justify-end space-x-2 text-[10px] font-bold pt-1">
+                                <span class="text-gray-400">Отмена</span>
+                                <span class="text-tsusima-purple border border-red-500 px-1.5 py-0.5 rounded bg-purple-50">Настройки</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-gray-400">В появившемся окне нажмите кнопку <b class="text-white">«Настройки»</b>.</p>
+                </div>
+
+                <!-- Шаг 3 -->
+                <div class="bg-[#0a0814]/60 border border-white/10 p-3 rounded-2xl flex flex-col space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-6 h-6 rounded-full bg-tsusima-purple text-white text-xs font-bold flex items-center justify-center">3</span>
+                        <span class="text-xs font-bold text-white">Разрешите установку</span>
+                    </div>
+                    <!-- Макет экрана телефона 3 -->
+                    <div class="bg-[#05040a] border-2 border-[#231b40] rounded-xl p-2.5 space-y-2 text-gray-800">
+                        <div class="text-[10px] font-bold text-white">Установка неизвестных прил.</div>
+                        <div class="border-2 border-red-500 bg-purple-50 rounded-lg p-2 flex justify-between items-center">
+                            <span class="text-[9px] font-bold text-gray-900 leading-tight">Разрешить из этого источника</span>
+                            <div class="w-6 h-3 bg-tsusima-purple rounded-full relative flex items-center px-0.5">
+                                <div class="w-2.5 h-2.5 bg-white rounded-full ml-auto shadow"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-gray-400">Включите тумблер и вернитесь назад для продолжения.</p>
+                </div>
+
+            </div>
+
+            <!-- Кнопка скачивания APK -->
+            <div class="pt-2">
+                <a href="Цусим Банк.apk" download class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Скачать APK (8.4 МБ)</span>
+                </a>
+                <p class="text-[10px] text-gray-400 mt-2">Готово! Теперь приложение Цусим банк установится автоматически.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-[#080612]/95 backdrop-blur-xl border-t border-gray-200 dark:border-[#1f1938] z-40 py-2 px-4 flex justify-around items-center text-[10px]">
+        <button onclick="navigateTo('home')" class="text-tsusima-lightPurple flex flex-col items-center"><i class="fa-solid fa-house text-base"></i><span>Главная</span></button>
+        <button onclick="navigateTo('calculator')" class="text-gray-500 dark:text-gray-400 flex flex-col items-center"><i class="fa-solid fa-calculator text-base"></i><span>Расчет</span></button>
+        <button onclick="navigateTo('score')" class="text-gray-500 dark:text-gray-400 flex flex-col items-center"><i class="fa-solid fa-chart-line text-base"></i><span>Шанс</span></button>
+        <button onclick="navigateTo('reviews-page')" class="text-gray-500 dark:text-gray-400 flex flex-col items-center"><i class="fa-solid fa-star text-base"></i><span>Отзывы</span></button>
+    </div>
+
+    <script>
+        const firstNamesPool = [
+            "Алексей", "Елена", "Дмитрий", "Сергей", "Марина", "Игорь", "Ольга", "Василий", "Анна", "Павел",
+            "Екатерина", "Максим", "Наталья", "Андрей", "Татьяна", "Иван", "Светлана", "Александр", "Юлия", "Роман",
+            "Ирина", "Михаил", "Кристина", "Денис", "Виктория", "Евгений", "Анастасия", "Артем", "Полина", "Владимир",
+            "Руслан", "Диана", "Тимур", "Алина", "Кирилл", "София", "Никита", "Алиса", "Илья", "Валерия",
+            "Константин", "Станислав", "Яна", "Артур", "Ксения", "Глеб", "Злата", "Вячеслав", "Ева", "Олег",
+            "Милана", "Антон", "Варвара", "Виктор", "Арина", "Борис", "Ульяна", "Вадим", "Кира", "Григорий",
+            "Александра", "Арсен", "Маргарита", "Лев", "Елизавета", "Петр", "Вероника", "Эдуард", "Амина", "Георгий",
+            "Карина", "Дарина", "Всеволод", "Регина", "Аркадий"
+        ];
+
+        const citiesPool = [
+            "Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань", "Нижний Новгород", "Челябинск",
+            "Самара", "Омск", "Ростов-на-Дону", "Уфа", "Красноярск", "Воронеж", "Пермь", "Волгоград",
+            "Краснодар", "Саратов", "Тюмень", "Тольятти", "Ижевск", "Барнаул", "Ульяновск", "Иркутск",
+            "Хабаровск", "Ярославль", "Владивосток", "Махачкала", "Томск", "Оренбург", "Кемерово",
+            "Новокузнецк", "Рязань", "Астрахань", "Пенза", "Липецк", "Киров", "Чебоксары", "Тула", "Калининград", "Курск"
+        ];
+
+        const reviewTextsPool = [
+            "С любой кредитной историей одобрили за пару минут! Огромное спасибо поддержке.",
+            "Взяла сумму под низкий процент на ремонт. Очень удобное приложение, деньги пришли сразу.",
+            "Одобрили без справок 2-НДФЛ. Процент приятный, выплаты четкие и прозрачные.",
+            "Перевели по СБП мгновенно за 2 минуты. Очень выручили в сложной ситуации!",
+            "Приложение простое и понятное. Калькулятор показывает всё точно, без скрытых платежей.",
+            "Оформил кредит на бизнес под сниженный процент. Всё супер, рекомендую!",
+            "Быстрая установка приложения на Android. Средства поступили на карту моментально.",
+            "Честные условия, ставка зафиксировалась сразу в договоре без навязанных услуг.",
+            "Очень выручили, деньги зачислились быстрее, чем дочитал договор.",
+            "Удобный интерфейс, отличная поддержка в чате, одобрили за 120 секунд!"
+        ];
+
+        const amountsPool = ["150 000 ₽", "300 000 ₽", "500 000 ₽", "800 000 ₽", "1 200 000 ₽", "2 500 000 ₽", "4 000 000 ₽", "5 500 000 ₽", "7 000 000 ₽", "9 500 000 ₽"];
+
+        function generateRandomReviews() {
+            let pool = [];
+            for (let i = 0; i < 75; i++) {
+                let name = firstNamesPool[i % firstNamesPool.length] + " " + String.fromCharCode(1040 + (i % 32)) + ".";
+                let city = citiesPool[(i * 7) % citiesPool.length];
+                let text = reviewTextsPool[(i * 3) % reviewTextsPool.length];
+                let sum = amountsPool[i % amountsPool.length];
+                let stars = (i % 8 === 0) ? 4 : 5;
+                pool.push({ name: `${name} (г. ${city})`, sum, text, stars, userAdded: false });
+            }
+            return pool.sort(() => 0.5 - Math.random());
+        }
+
+        let dynamicReviews = generateRandomReviews();
+
+        function getUserReviews() {
+            return JSON.parse(localStorage.getItem('tsusima_user_reviews') || '[]');
+        }
+
+        function createReviewCard(rev) {
+            let starsHtml = '';
+            for (let i = 0; i < 5; i++) {
+                if (i < rev.stars) {
+                    starsHtml += '<i class="fa-solid fa-star text-amber-400 mr-0.5"></i>';
+                } else {
+                    starsHtml += '<i class="fa-regular fa-star text-gray-400 mr-0.5"></i>';
+                }
+            }
+
+            const userBadge = rev.userAdded ? '<span class="bg-purple-100 text-tsusima-purple text-[10px] px-2 py-0.5 rounded-full font-bold ml-2">Ваш отзыв</span>' : '';
+
+            return `
+                <div class="gsdi-glass p-5 rounded-2xl space-y-3 fade-in">
+                    <div class="flex justify-between items-center">
+                        <div class="text-xs font-bold text-gray-900 dark:text-white flex items-center">${rev.name} ${userBadge}</div>
+                        <div class="text-[10px]">${starsHtml}</div>
+                    </div>
+                    <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">«${rev.text}»</p>
+                    <div class="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold pt-2 border-t border-gray-200 dark:border-white/10">Получено: ${rev.sum}</div>
+                </div>
+            `;
+        }
+
+        function renderReviews() {
+            const userRev = getUserReviews();
+            const allRevs = [...userRev, ...dynamicReviews];
+
+            const homeContainer = document.getElementById('homeReviewsContainer');
+            if (homeContainer) {
+                homeContainer.innerHTML = '';
+                allRevs.slice(0, 3).forEach(rev => {
+                    homeContainer.innerHTML += createReviewCard(rev);
+                });
+            }
+
+            const fullContainer = document.getElementById('fullReviewsContainer');
+            if (fullContainer) {
+                fullContainer.innerHTML = '';
+                allRevs.forEach(rev => {
+                    fullContainer.innerHTML += createReviewCard(rev);
+                });
+            }
+        }
+
+        function handleUserReviewSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('reviewAuthor').value;
+            const sum = document.getElementById('reviewSum').value;
+            const text = document.getElementById('reviewText').value;
+            const stars = parseInt(document.getElementById('reviewRating').value);
+
+            const newRev = { name, sum, text, stars, userAdded: true };
+
+            const userRev = getUserReviews();
+            userRev.unshift(newRev);
+            localStorage.setItem('tsusima_user_reviews', JSON.stringify(userRev));
+
+            document.getElementById('addReviewForm').reset();
+            alert('Ваш отзыв опубликован!');
+            renderReviews();
+        }
+
+        const cardContainer = document.getElementById('cardContainer');
+        const cardInner = document.getElementById('cardInner');
+
+        cardContainer.addEventListener('mousemove', (e) => {
+            if (cardContainer.classList.contains('flipped')) return;
+            const rect = cardContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            const rotateX = (-y / 12).toFixed(2);
+            const rotateY = (x / 12).toFixed(2);
+            cardInner.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        cardContainer.addEventListener('mouseleave', () => {
+            if (cardContainer.classList.contains('flipped')) return;
+            cardInner.style.transform = `rotateX(0deg) rotateY(0deg)`;
+        });
+
+        cardContainer.addEventListener('click', () => {
+            cardContainer.classList.toggle('flipped');
+            if (cardContainer.classList.contains('flipped')) {
+                cardInner.style.transform = 'rotateY(180deg)';
+            } else {
+                cardInner.style.transform = 'rotateX(0deg) rotateY(0deg)';
+            }
+        });
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.className = 'fa-solid fa-sun text-amber-500';
+            } else {
+                html.classList.add('dark');
+                icon.className = 'fa-solid fa-moon';
+            }
+        }
+
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setCardStyle(cls) {
+            const front = document.getElementById('cardVisual');
+            const back = document.querySelector('.card-back');
+            front.className = 'card-front ' + cls + ' text-white';
+            back.className = 'card-back ' + cls + ' text-white flex flex-col justify-between';
+        }
+
+        let termUnit = 'months';
+
+        function setTermUnit(unit) {
+            termUnit = unit;
+            const btnMonths = document.getElementById('btnUnitMonths');
+            const btnYears = document.getElementById('btnUnitYears');
+            const slider = document.getElementById('termRange');
+
+            if (unit === 'months') {
+                btnMonths.className = 'px-2.5 py-1 rounded-md bg-tsusima-purple text-white transition';
+                btnYears.className = 'px-2.5 py-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-white transition';
+                slider.min = "3";
+                slider.max = "240";
+                slider.step = "1";
+                slider.value = "36";
+            } else {
+                btnYears.className = 'px-2.5 py-1 rounded-md bg-tsusima-purple text-white transition';
+                btnMonths.className = 'px-2.5 py-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-white transition';
+                slider.min = "1";
+                slider.max = "20";
+                slider.step = "1";
+                slider.value = "3";
+            }
+            calculateLoan();
+        }
+
+        function getPlural(number, one, two, five) {
+            let n = Math.abs(number);
+            n %= 100;
+            if (n >= 5 && n <= 20) return five;
+            n %= 10;
+            if (n === 1) return one;
+            if (n >= 2 && n <= 4) return two;
+            return five;
+        }
+
+        function calculateRate(amount) {
+            if (amount >= 5000000) return 0.085;
+            if (amount >= 3000000) return 0.095;
+            if (amount >= 1000000) return 0.105;
+            return 0.11;
+        }
+
+        const amountRange = document.getElementById('amountRange');
+        const amountInput = document.getElementById('amountInput');
+        const termRange = document.getElementById('termRange');
+
+        function formatMoney(num) {
+            return new Intl.NumberFormat('ru-RU').format(Math.round(num)) + ' ₽';
+        }
+
+        function calculateLoan() {
+            let P = parseFloat(amountRange.value);
+            let rawTerm = parseInt(termRange.value);
+            let totalMonths = termUnit === 'years' ? rawTerm * 12 : rawTerm;
+
+            let termDisplayText = '';
+            if (termUnit === 'months') {
+                const monthWord = getPlural(totalMonths, 'месяц', 'месяца', 'месяцев');
+                const yearsEq = (totalMonths / 12).toFixed(1).replace('.0', '');
+                termDisplayText = `${totalMonths} ${monthWord} (${yearsEq} ${getPlural(Math.floor(totalMonths/12), 'год', 'года', 'лет')})`;
+            } else {
+                const yearWord = getPlural(rawTerm, 'год', 'года', 'лет');
+                termDisplayText = `${rawTerm} ${yearWord} (${totalMonths} ${getPlural(totalMonths, 'месяц', 'месяца', 'месяцев')})`;
+            }
+
+            document.getElementById('termValueDisplay').textContent = termDisplayText;
+
+            let currentRate = calculateRate(P);
+            let r = currentRate / 12;
+
+            const monthly = P * (r * Math.pow(1 + r, totalMonths)) / (Math.pow(1 + r, totalMonths) - 1);
+            const total = monthly * totalMonths;
+            const interest = total - P;
+
+            amountInput.value = formatMoney(P);
+            document.getElementById('monthlyPayment').textContent = formatMoney(monthly);
+            document.getElementById('totalInterest').textContent = formatMoney(interest);
+            document.getElementById('totalAmount').textContent = formatMoney(total);
+
+            const displayRatePct = (currentRate * 100).toFixed(1) + '%';
+            document.getElementById('currentRateText').textContent = displayRatePct;
+            document.getElementById('btnRateText').textContent = displayRatePct;
+
+            let scheduleHtml = '';
+            let balance = P;
+            for (let i = 1; i <= totalMonths; i++) {
+                let interestPayment = balance * r;
+                let principalPayment = monthly - interestPayment;
+                balance -= principalPayment;
+                if (balance < 0) balance = 0;
+
+                scheduleHtml += `
+                    <tr class="hover:bg-purple-500/5 transition">
+                        <td class="py-2.5 px-4 font-mono font-bold">${i}</td>
+                        <td class="py-2.5 px-4 font-semibold text-tsusima-lightPurple">${formatMoney(monthly)}</td>
+                        <td class="py-2.5 px-4">${formatMoney(principalPayment)}</td>
+                        <td class="py-2.5 px-4 text-amber-500">${formatMoney(interestPayment)}</td>
+                        <td class="py-2.5 px-4 font-mono">${formatMoney(balance)}</td>
+                    </tr>
+                `;
+            }
+            document.getElementById('scheduleBody').innerHTML = scheduleHtml;
+        }
+
+        amountRange.addEventListener('input', calculateLoan);
+        termRange.addEventListener('input', calculateLoan);
+
+        function updateScore() {
+            const ageInput = document.getElementById('ageInput');
+            const scoreAmountInput = document.getElementById('scoreAmountInput');
+            if (!ageInput || !scoreAmountInput) return;
+
+            const age = parseInt(ageInput.value);
+            const amount = parseInt(scoreAmountInput.value);
+
+            document.getElementById('ageVal').innerText = age + ' лет';
+            document.getElementById('scoreAmountVal').innerText = formatMoney(amount);
+
+            let pct = 95;
+            if (amount <= 300000) pct = 96 - Math.floor(amount / 50000);
+            else if (amount <= 1500000) pct = 80 - Math.floor((amount - 300000) / 30000);
+            else if (amount <= 3000000) pct = 40 - Math.floor((amount - 1500000) / 75000);
+            else {
+                pct = 5 - Math.floor((amount - 3000000) / 2500000);
+                if (pct < 2) pct = 2;
+            }
+
+            if (age < 21 || age > 65) pct = Math.max(2, pct - 12);
+
+            const scoreEl = document.getElementById('scorePercent');
+            const warnEl = document.getElementById('scoreWarning');
+
+            scoreEl.innerText = pct + '%';
+
+            if (pct <= 10) {
+                scoreEl.className = "text-4xl font-extrabold text-red-500";
+                if (warnEl) warnEl.classList.add('hidden');
+            } else if (pct <= 50) {
+                scoreEl.className = "text-4xl font-extrabold text-amber-500";
+                if (warnEl) warnEl.classList.remove('hidden');
+            } else {
+                scoreEl.className = "text-4xl font-extrabold text-emerald-500";
+                if (warnEl) warnEl.classList.add('hidden');
+            }
+        }
+
+        function copyContact(text, name) {
+            navigator.clipboard.writeText(text);
+            alert(name + ' скопирован!');
+        }
+
+        function openInstallModal() { document.getElementById('installModal').classList.remove('hidden'); }
+        function closeInstallModal() { document.getElementById('installModal').classList.add('hidden'); }
+
+        calculateLoan();
+        updateScore();
+        renderReviews();
+    </script>
+</body>
+</html>
